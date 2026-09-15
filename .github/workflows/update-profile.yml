@@ -1,0 +1,54 @@
+name: Update organization profile metrics
+
+on:
+  schedule:
+    # 每天北京时间 09:00 与 21:00 自动更新 (UTC 01:00 & 13:00)
+    - cron: '0 1,13 * * *'
+  workflow_dispatch: # 支持在 GitHub Actions 页面上手动一键触发
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/update-metrics.js'
+      - '.github/workflows/update-profile.yml'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: organization-profile-metrics
+  cancel-in-progress: true
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Generate organization metrics
+        env:
+          # 优先使用自定义 PAT (如有读取私有仓库需求)，默认使用仓库 GITHUB_TOKEN
+          GITHUB_TOKEN: ${{ secrets.ORG_METRICS_TOKEN || secrets.GITHUB_TOKEN }}
+          GITHUB_ORG: shworks-25
+        run: node scripts/update-metrics.js
+
+      - name: Commit updated metrics
+        run: |
+          if git diff --quiet -- profile/metrics.svg; then
+            echo "Metrics are already up to date."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add profile/metrics.svg
+          git commit -m "chore: update organization profile metrics [skip ci]"
+          git pull --rebase origin main
+          git push

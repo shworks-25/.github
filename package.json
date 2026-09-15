@@ -1,0 +1,21 @@
+{
+  "name": "shworks-github-profile",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Brand assets and engineering metrics generator for SHWORKS GitHub organization",
+  "scripts": {
+    "build:banner": "node scripts/generate-banner.js",
+    "build:metrics": "node scripts/update-metrics.js",
+    "update:metrics": "node scripts/update-metrics.js",
+    "build": "npm run build:banner && npm run build:metrics"
+  },
+  "keywords": [
+    "github-profile",
+    "shworks",
+    "metrics",
+    "banner",
+    "svg"
+  ],
+  "author": "SHWORKS Engineering",
+  "license": "Apache-2.0"
+}
