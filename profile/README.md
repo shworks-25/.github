@@ -153,7 +153,6 @@
 ### // CONNECT
 
 - GitHub 组织：**[github.com/shworks-25](https://github.com/shworks-25)**
-- 商务洽谈与开源协作：欢迎访问官网了解更多，或通过组织内公开仓库发起 Issue 与 Pull Request。
 
 ---
 
